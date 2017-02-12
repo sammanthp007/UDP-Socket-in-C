@@ -84,7 +84,6 @@ int main(int argc, char *argv[])
 
             // add the end of line character to sending msg
             sending_msg[buffer_len + 4] = '\0';
-            write(1,sending_msg, strlen(sending_msg));
 
             // send using UDP
             // buffer_len + 5 for including the last char
