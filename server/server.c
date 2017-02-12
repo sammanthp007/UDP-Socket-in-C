@@ -77,11 +77,18 @@ int main(int argc, char *argv[])
 
         /* Send the content of a file */
         if (strncmp(request_buf, "FILE", 4) == 0){
-            // get the content
+
+            /* get the file_name */
             char content[n - 5];
             memcpy (content, &request_buf[5], n - 6);
             content[n - 6] = '\0';
+            write(1, content, n - 6);
 
+            /* get the 4 byte TCP address */
+            char TCP_ip[4];
+            memcpy (TCP_ip, &request_buf[n - 5], 4);
+            write(1, TCP_ip,4);
+            
             // look if there is a file called content in the directory
             FILE * fpointer;
             if ((fpointer = fopen(content, "r")) == NULL)

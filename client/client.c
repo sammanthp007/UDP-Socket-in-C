@@ -112,8 +112,8 @@ int main(int argc, char *argv[])
             char message[MAX_LINE + 20];
             strcpy(message, "FILE\n");
             strcat(message, file_name);
-            //strcat(message, tcp_port);
-            //strcat(message, "\n");
+            strcat(message, tcp_port);
+            strcat(message, "\n");
 
             /* remove the trailing \n from file name */
             file_name[buffer_len - 1] = '\0';
