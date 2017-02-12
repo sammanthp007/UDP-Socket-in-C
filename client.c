@@ -70,17 +70,20 @@ int main(int argc, char *argv[])
             // Send message
             // Create a new sending buffer whose size can take in all msg
             char sending_msg[buffer_len + 5];
+          
             // add CAP\n
             strcpy(sending_msg, "CAP\n");
+            
             // buffer already has the trailing \n from fgets
-            strcpy(sending_msg, input_buffer);
+            strcat(sending_msg, input_buffer);
 
             // add the end of line character to sending msg
             sending_msg[buffer_len + 4] = '\0';
+            write(1,sending_msg, strlen(sending_msg));
 
             // send using UDP
             // buffer_len + 5 for including the last char
-            if (n = sendto(c_udp_soc, sending_msg, buffer_len + 4, 0, (struct sockaddr *)&server_addr, len_serv_addr) < 0)
+            if (n = sendto(c_udp_soc, sending_msg, strlen(sending_msg), 0, (struct sockaddr *)&server_addr, len_serv_addr) < 0)
             {
                 print_error_and_exit("Sending");
             }

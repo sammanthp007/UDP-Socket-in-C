@@ -50,7 +50,34 @@ int main(int argc, char *argv[])
         }
 
         // upon receiving
-        write(1, request_buf, n);
+
+        // Because noise can get in during transmission
+        request_buf[n] = '\0';
+        printf("Received>>>>>%s<<<<< \n", request_buf);
+
+        /* Capitalize and send message using UDP */
+        if (strncmp(request_buf, "CAP", 3) == 0)
+        {
+            // get the content
+            char content[n - 4];
+            memcpy (content, &request_buf[4], n - 5);
+            content[n - 5] = '\0';
+
+            // capitalize the content
+            Cap(content);
+
+            // create a message to send
+            char msg[strlen(content)];
+            strcpy(msg, content);
+            strcat(msg, "\n");
+
+            // send the response
+            if ((n = sendto(serv_socket, msg, strlen(msg), 0, (struct sockaddr *)&client_address, len_client_adr)) < 0)
+            {
+                print_error_and_exit("while sending");
+            }
+        }
+
 
         // send the response
         if ((n = sendto(serv_socket, "Got it", 6, 0, (struct sockaddr *)&client_address, len_client_adr)) < 0)
