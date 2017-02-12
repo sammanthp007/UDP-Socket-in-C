@@ -57,19 +57,6 @@ int main(int argc, char *argv[])
             print_error_and_exit("while sending");
         }
     }
-}
-
-
-
-
-
-
-
-
-
-
-
-
 
     return 0;
 }
