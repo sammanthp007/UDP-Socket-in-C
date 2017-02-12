@@ -47,20 +47,18 @@ int main(int argc, char *argv[])
             print_error_and_exit("While receiving");
         }
 
-        // upon receiving
-
-        // Because noise can get in during transmission
+        /* Remove noise */
         request_buf[n] = '\0';
 
         /* Capitalize and send message using UDP */
         if (strncmp(request_buf, "CAP", 3) == 0)
         {
-            // get the content
+            /* get the content */
             char content[n - 4];
             memcpy (content, &request_buf[4], n - 5);
             content[n - 5] = '\0';
 
-            // capitalize the content
+            /* capitalize the content */
             Cap(content);
 
             // create a message to send
@@ -75,36 +73,36 @@ int main(int argc, char *argv[])
             }
         }
 
-        /* Send the file_name of a file */
+        /* Request for a file */
         if (strncmp(request_buf, "FILE", 4) == 0){
 
-            /* get the file_name */
+            /* get file_name */
             char file_name[n - 5];
             int size_filename = n - 6 - 5;
             memcpy (file_name, &request_buf[5], size_filename);
             file_name[size_filename] = '\0';
 
-            /* get the 4 byte TCP port */
+            /* get 4 byte TCP port */
             char TCP_ip[4];
             memcpy (TCP_ip, &request_buf[n - 5], 4);
             char *nendptr;
             short int tcp_port = strtol(TCP_ip, &nendptr, 0);
 
             FILE * fpointer;
-            /* if there is no file with sever */
+            /* file not found */
             if ((fpointer = fopen(file_name, "r")) == NULL)
             {
                 char return_val[] = "NOT FOUND\n";
-                // send the response
+                /* send response */
                 if ((n = sendto(serv_socket, return_val, strlen(return_val), 0, (struct sockaddr *)&client_address, len_addr)) < 0)
                 {
                     print_error_and_exit("while sending");
                 }
             }
-            /* there is a file with server */
+            /* file found */
             else
             {
-                /* get the size of the file */
+                /* get size of the file */
                 fseek(fpointer, 0L, SEEK_END);
                 int file_sz = ftell(fpointer);
 
@@ -155,8 +153,9 @@ int main(int argc, char *argv[])
                 free(filecontent);
 
                 /* close tcp connection */
-                return EXIT_SUCCESS;
-                // TODO need to send empty file if file is empty
+                if (close(tcp_soc) < 0) {
+                    print_error_and_exit("while closing connection");
+                }
             }
         }
     }
