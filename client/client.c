@@ -129,31 +129,26 @@ int main(int argc, char *argv[])
             {
                 /* remove noise added during transmission */
                 message[n] = '\0';
-                write(1, message, n);
+                if (strncmp(message, "OK", 2) == 0){
+                    printf("OK");
+                    // Find the just data section of the message
+                    int ii = strcspn(message, "\n");
+                    char just_data[n];
+                    memcpy(just_data, &message[ii + 1], n - ii);
 
-                if (strncmp(input_buffer, "OK", 2) == 0){
-                        printf("OK");
+                    //save the just the data to a file
+                    FILE* dat = fopen(file_name, "wb");
+
+                    fprintf(dat, just_data);
+                    fclose(dat);
+
+                    printf("Server has responded. The content of server response");
+                    printf(" has been saved in %s successfully.\n", file_name);
                 }
 
-                else if (strncmp(input_buffer, "NOT FOUND\n", 10) == 0) {
+                else if (strncmp(message, "NOT FOUND\n", 10) == 0) {
                     printf("NOT FOUND\n");
-                    exit(0);
                 }
-
-
-                // Find the just data section of the message
-                int ii = strcspn(message, "\n");
-                char just_data[n];
-                memcpy(just_data, &message[ii + 1], n - ii);
-
-                //save the just the data to a file
-                FILE* dat = fopen(file_name, "wb");
-
-                fprintf(dat, just_data);
-                fclose(dat);
-
-                printf("Server has responded. The content of server response");
-                printf(" has been saved in %s successfully.\n", file_name);
             }
         }
         else if (strlen(input_buffer) == 2 && strncmp(input_buffer, "q", 1) == 0)
