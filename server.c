@@ -53,7 +53,6 @@ int main(int argc, char *argv[])
 
         // Because noise can get in during transmission
         request_buf[n] = '\0';
-        printf("Received>>>>>%s<<<<< \n", request_buf);
 
         /* Capitalize and send message using UDP */
         if (strncmp(request_buf, "CAP", 3) == 0)
@@ -78,12 +77,50 @@ int main(int argc, char *argv[])
             }
         }
 
+        /* Send the content of a file */
+        if (strncmp(request_buf, "FILE", 4) == 0){
+            // get the content
+            char content[n - 5];
+            memcpy (content, &request_buf[5], n - 6);
+            content[n - 6] = '\0';
 
-        // send the response
-        if ((n = sendto(serv_socket, "Got it", 6, 0, (struct sockaddr *)&client_address, len_client_adr)) < 0)
-        {
-            print_error_and_exit("while sending");
+            // look if there is a file called content in the directory
+            FILE * fpointer;
+            if ((fpointer = fopen(content, "r")) == NULL)
+            {
+                char return_val[] = "9\nNOT FOUND";
+                // send the response
+                if ((n = sendto(serv_socket, return_val, strlen(return_val), 0, (struct sockaddr *)&client_address, len_client_adr)) < 0)
+                {
+                    print_error_and_exit("while sending");
+                }
+            }
+            else
+            {
+                // get the content of the file
+                char *filecontent = ReadFile(content);
+                if (filecontent)
+                {
+                    // create and modify msg
+                    char msg[strlen(filecontent)];
+                    filecontent[strlen(filecontent) - 1] = '\0';
+                    int char_in_file = strlen(filecontent);
+                    sprintf(msg, "%d", char_in_file);
+                    strcat(msg, "\n");
+                    strcat(msg, filecontent);
+
+                    // send message to client
+                if ((n = sendto(serv_socket, msg, strlen(msg), 0, (struct sockaddr *)&client_address, len_client_adr)) < 0)
+                {
+                    print_error_and_exit("while sending");
+                }
+                    free(filecontent);
+                }
+            }
         }
+
+
+
     }
 
     return 0;
