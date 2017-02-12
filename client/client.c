@@ -169,14 +169,18 @@ int main(int argc, char *argv[])
                         int data_len;
                         char buffer[MAX_LINE];
 
-                        /* Retrive input from connected socket */
-                        data_len = recv(tcp_conn_s, buffer, MAX_LINE, 0);
-                        buffer[data_len] = '\0';
-                        printf("Content of file");
-                        write(1, buffer, data_len);
+                        while (data_len)
+                        {
 
-                        /* info */
-                        printf("Closing socket");
+                            /* Retrive input from connected socket */
+                            data_len = recv(tcp_conn_s, buffer, MAX_LINE, 0);
+                            buffer[data_len] = '\0';
+                            printf("Content of file");
+                            write(1, buffer, data_len);
+
+                            /* info */
+                            printf("Closing socket");
+                        }
 
                         /* close the connection */
                         if ( close(tcp_conn_s) < 0 ) {
