@@ -151,27 +151,45 @@ int main(int argc, char *argv[])
                         print_error_and_exit("binding tcp");
                     }
 
+                    printf("Now listening to socket");
                     /* listen to socket */
                     if (listen(tcp_lis_s, LISTENQ) < 0) {
                         print_error_and_exit("while listening");
                     }
 
+
                     /* for connection until accpting */
                     while (1) {
+                        printf("waiting to be accepted");
                         if ((tcp_conn_s = accept(tcp_lis_s, (struct sockaddr *)&tcp_client_addr, &len_serv_addr)) < 0)
                         {
                             print_error_and_exit("connection tcp");
                         }
 
                         printf("New connection made with server using TCP");
-                        int data_len = 1;
+                        int data_len;
+                        char buffer[MAX_LINE];
+
+                        /* Retrive input from connected socket */
+                        data_len = recv(tcp_conn_s, buffer, MAX_LINE, 0);
+                        buffer[data_len] = '\0';
+                        printf("Content of file");
+                        write(1, buffer, data_len);
+
+                        /* info */
+                        printf("Closing socket");
+
+                        /* close the connection */
+                        if ( close(tcp_conn_s) < 0 ) {
+                            print_error_and_exit("closing tcp socket");
+                        }
                     }
-                                           
+
 
                     exit(0);
 
 
-                    
+
                     // Find the just data section of the message
                     int ii = strcspn(message, "\n");
                     char just_data[n];
