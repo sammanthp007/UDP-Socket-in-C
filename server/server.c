@@ -2,7 +2,7 @@
 
 int main(int argc, char *argv[])
 {
-    int serv_socket;                    /* define the socket */
+    int serv_socket, tcp_soc;                    /* define sockets */
     short int port;                     /* port number */
     struct sockaddr_in server_address;  /* server address structure */
     struct sockaddr_in client_address;  /* client address */
@@ -84,10 +84,15 @@ int main(int argc, char *argv[])
             memcpy (file_name, &request_buf[5], size_filename);
             file_name[size_filename] = '\0';
 
-            /* get the 4 byte TCP address */
+            /* get the 4 byte TCP port */
             char TCP_ip[4];
             memcpy (TCP_ip, &request_buf[n - 5], 4);
-            
+            char *nendptr;
+            short int tcp_port = strtol(TCP_ip, &nendptr, 0);
+            if (*nendptr) {
+                print_error_and_exit("invalid port");
+            }
+
             FILE * fpointer;
             /* if there is no file with sever */
             if ((fpointer = fopen(file_name, "r")) == NULL)
@@ -105,7 +110,7 @@ int main(int argc, char *argv[])
                 /* get the size of the file */
                 fseek(fpointer, 0L, SEEK_END);
                 int file_sz = ftell(fpointer);
-                
+
                 /* put fpointer to first */
                 rewind(fpointer);
 
@@ -119,7 +124,8 @@ int main(int argc, char *argv[])
                 {
                     print_error_and_exit("while sending ok");
                 }
-                exit(0);
+
+                /* get file content */
 
                 // get the file_name of the file
                 char *filecontent = ReadFile(file_name);
@@ -133,11 +139,27 @@ int main(int argc, char *argv[])
                     strcat(msg, "\n");
                     strcat(msg, filecontent);
 
-                    // send message to client
-                if ((n = sendto(serv_socket, msg, strlen(msg), 0, (struct sockaddr *)&client_address, len_addr)) < 0)
-                {
-                    print_error_and_exit("while sending");
-                }
+                    /* send message to client using TCP */
+                    /* create a socket */
+                    if ((tcp_soc = socket(AF_INET,SOCK_STREAM,0))<0) {
+                        print_error_and_exit("create tcp socket");
+                    }
+
+                    /* set the remote servers port */
+                    client_address.sin_port = htons(tcp_port);
+
+
+
+                    
+
+
+
+
+
+                    if ((n = sendto(serv_socket, msg, strlen(msg), 0, (struct sockaddr *)&client_address, len_addr)) < 0)
+                    {
+                        print_error_and_exit("while sending");
+                    }
                     free(filecontent);
                 }
             }
