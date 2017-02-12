@@ -112,8 +112,11 @@ int main(int argc, char *argv[])
             char message[MAX_LINE + 20];
             strcpy(message, "FILE\n");
             strcat(message, file_name);
-            strcat(message, tcp_port);
-            strcat(message, "\n");
+            //strcat(message, tcp_port);
+            //strcat(message, "\n");
+
+            /* remove the trailing \n from file name */
+            file_name[buffer_len - 1] = '\0';
 
             /* Send message to server through UDP in the form "FILE\nxxx\n" */
             if (n = sendto(c_udp_soc, message, strlen(message), 0, (struct sockaddr *)&server_addr, len_serv_addr) < 0)
