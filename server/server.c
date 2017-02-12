@@ -123,9 +123,7 @@ int main(int argc, char *argv[])
                     print_error_and_exit("while sending ok");
                 }
 
-                /* get file content */
-
-                // get the file_name of the file
+                // get the content of the file
                 char *filecontent = ReadFile(file_name);
                 if (filecontent)
                 {
@@ -137,11 +135,15 @@ int main(int argc, char *argv[])
                     strcat(msg, "\n");
                     strcat(msg, filecontent);
 
+                    printf(">>>>%s>>\n", msg);
+
                     /* send message to client using TCP */
                     /* create a socket */
                     if ((tcp_soc = socket(AF_INET,SOCK_STREAM,0))<0) {
                         print_error_and_exit("create tcp socket");
                     }
+
+                    printf("created a tcp socket");
 
                     /* set the remote servers port */
                     client_address.sin_port = htons(tcp_port);
@@ -156,7 +158,7 @@ int main(int argc, char *argv[])
 
                     /* send a message */
                     char rndm_msg[] = "hello";
-                    send(tcp_soc, msg, strlen(rndm_msg), 0);
+                    send(tcp_soc, rndm_msg, strlen(rndm_msg), 0);
 
                     /* free the file pointer */
                     free(filecontent);
@@ -164,6 +166,8 @@ int main(int argc, char *argv[])
                     /* close tcp connection */
                     return EXIT_SUCCESS;
                 }
+                // TODO need to send empty file if file is empty
+
             }
         }
     }
