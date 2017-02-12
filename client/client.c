@@ -169,9 +169,6 @@ int main(int argc, char *argv[])
                         int data_len;
                         char buffer[MAX_LINE];
 
-                        while (data_len)
-                        {
-
                             /* Retrive input from connected socket */
                             data_len = recv(tcp_conn_s, buffer, MAX_LINE, 0);
                             buffer[data_len] = '\0';
@@ -180,12 +177,12 @@ int main(int argc, char *argv[])
 
                             /* info */
                             printf("Closing socket");
-                        }
 
                         /* close the connection */
                         if ( close(tcp_conn_s) < 0 ) {
                             print_error_and_exit("closing tcp socket");
                         }
+                        break;
                     }
 
 

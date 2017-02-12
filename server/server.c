@@ -129,29 +129,33 @@ int main(int argc, char *argv[])
                     // create and modify msg
                     filecontent[strlen(filecontent) - 1] = '\0';
                     strcpy(msg, filecontent);
-
-                    /* create a TCP socket */
-                    if ((tcp_soc = socket(AF_INET,SOCK_STREAM,0))<0) {
-                        print_error_and_exit("create tcp socket");
-                    }
-
-                    /* set the remote servers port */
-                    client_address.sin_port = htons(tcp_port);
-
-                    /* connect to remote server */
-                    while (connect(tcp_soc, (struct sockaddr *)&client_address, sizeof(client_address)) < 0);
-
-                    /* send a message */
-                    send(tcp_soc, msg, strlen(msg), 0);
-
-                    /* free the file pointer */
-                    free(filecontent);
-
-                    /* close tcp connection */
-                    return EXIT_SUCCESS;
                 }
-                // TODO need to send empty file if file is empty
+                else {
+                    strcpy(msg, "");
+                }
 
+                /* create a TCP socket */
+                if ((tcp_soc = socket(AF_INET,SOCK_STREAM,0))<0) {
+                    print_error_and_exit("create tcp socket");
+                }
+
+                /* set the remote servers port */
+                client_address.sin_port = htons(tcp_port);
+
+                /* connect to remote server */
+                while (connect(tcp_soc, (struct sockaddr *)&client_address, sizeof(client_address)) < 0) {
+                    printf("Connection refused... Trying again\n");
+                }
+
+                /* send a message */
+                send(tcp_soc, msg, strlen(msg), 0);
+
+                /* free the file pointer */
+                free(filecontent);
+
+                /* close tcp connection */
+                return EXIT_SUCCESS;
+                // TODO need to send empty file if file is empty
             }
         }
     }
