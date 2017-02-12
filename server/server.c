@@ -89,7 +89,6 @@ int main(int argc, char *argv[])
             memcpy (TCP_ip, &request_buf[n - 5], 4);
             char *nendptr;
             short int tcp_port = strtol(TCP_ip, &nendptr, 0);
-            printf(">>>IP %s, in int: %d\n",TCP_ip, tcp_port);
 
             FILE * fpointer;
             /* if there is no file with sever */
@@ -112,7 +111,6 @@ int main(int argc, char *argv[])
                 /* put fpointer to first */
                 rewind(fpointer);
 
-                printf("<><><>%d><><><",file_sz);
                 /* Create the OK code, max is OK\n64000\n\0 */
                 char ok_code[10];
                 sprintf(ok_code, "OK\n%d\n\0", file_sz);
@@ -125,40 +123,26 @@ int main(int argc, char *argv[])
 
                 // get the content of the file
                 char *filecontent = ReadFile(file_name);
+                char msg[strlen(filecontent)];
                 if (filecontent)
                 {
                     // create and modify msg
-                    char msg[strlen(filecontent)];
                     filecontent[strlen(filecontent) - 1] = '\0';
-                    int char_in_file = strlen(filecontent);
-                    sprintf(msg, "%d", char_in_file);
-                    strcat(msg, "\n");
-                    strcat(msg, filecontent);
+                    strcpy(msg, filecontent);
 
-                    printf(">>>>%s>>\n", msg);
-
-                    /* send message to client using TCP */
-                    /* create a socket */
+                    /* create a TCP socket */
                     if ((tcp_soc = socket(AF_INET,SOCK_STREAM,0))<0) {
                         print_error_and_exit("create tcp socket");
                     }
-
-                    printf("created a tcp socket");
 
                     /* set the remote servers port */
                     client_address.sin_port = htons(tcp_port);
 
                     /* connect to remote server */
-                    if (connect(tcp_soc, (struct sockaddr *)&client_address, sizeof(client_address)) < 0)
-                    {
-                        print_error_and_exit("connecting to server");
-                    }
-                    printf("Connected");
-
+                    while (connect(tcp_soc, (struct sockaddr *)&client_address, sizeof(client_address)) < 0);
 
                     /* send a message */
-                    char rndm_msg[] = "hello";
-                    send(tcp_soc, rndm_msg, strlen(rndm_msg), 0);
+                    send(tcp_soc, msg, strlen(msg), 0);
 
                     /* free the file pointer */
                     free(filecontent);
