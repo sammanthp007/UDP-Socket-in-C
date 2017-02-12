@@ -89,9 +89,7 @@ int main(int argc, char *argv[])
             memcpy (TCP_ip, &request_buf[n - 5], 4);
             char *nendptr;
             short int tcp_port = strtol(TCP_ip, &nendptr, 0);
-            if (*nendptr) {
-                print_error_and_exit("invalid port");
-            }
+            printf(">>>IP %s, in int: %d\n",TCP_ip, tcp_port);
 
             FILE * fpointer;
             /* if there is no file with sever */
@@ -156,7 +154,7 @@ int main(int argc, char *argv[])
                     printf("Connected");
 
 
-                   /* send a message */
+                    /* send a message */
                     char rndm_msg[] = "hello";
                     send(tcp_soc, msg, strlen(rndm_msg), 0);
 
