@@ -2,7 +2,7 @@
 
 int main(int argc, char *argv[])
 {
-    int client_soc, len_serv_addr, len_client_soc, n;
+    int c_udp_soc, len_serv_addr, len_c_udp_soc, n;
     short int server_UDP_port, client_tcp_port;
     struct sockaddr_in server_addr, client_addr;
     char *endptr;              // for strtol()
@@ -11,7 +11,6 @@ int main(int argc, char *argv[])
     char *ctcpPort;             // for client tcp port
     char input_buffer[MAX_LINE];
 
-    // input must be in the format:
 
     if (argc == 4)
     {
@@ -29,25 +28,26 @@ int main(int argc, char *argv[])
 
     }
     else {
-        printf("Invalid number of arguments. ");
         print_error_and_exit("<client> <TCPport> <serverIP> <serverUDP port>");
     }
 
-    // create UDP socket
-    if ((client_soc = socket(AF_INET, SOCK_DGRAM, 0) < 0))
+    /* create UDP socket */
+    if ((c_udp_soc = socket(AF_INET, SOCK_DGRAM, 0) < 0))
     {
-        print_error_and_exit("Cannot create Socket");
+        print_error_and_exit("Creating Socket");
     }
 
-    // <client> <TCP port> <server IP> <server UDP port>
     // configure the server address struct to send to
     memset(&server_addr, 0, sizeof(server_addr));
     server_addr.sin_family = AF_INET;
-    server_addr.sin_port = htons(client_tcp_port);
+    server_addr.sin_port = htons(server_UDP_port);
+    
+    /* Set server ip */
 
-    if (inet_aton(argv[2], &server_addr.sin_addr) <= 0) {
+     if (inet_aton(argv[2], &server_addr.sin_addr) <= 0) {
         print_error_and_exit("Setting UDP IP server");
     }
+    printf("Your port: %d / %d and ip address %s \n", server_UDP_port, htons(server_UDP_port),argv[2]);
 
     len_serv_addr = sizeof(server_addr);
 
@@ -81,11 +81,14 @@ int main(int argc, char *argv[])
 
             // send using UDP
             // buffer_len + 5 for including the last char
-            n = sendto(client_soc, sending_msg, buffer_len + 4, 0, (struct sockaddr *)&server_addr, len_serv_addr);
+            if (n = sendto(c_udp_soc, sending_msg, buffer_len + 4, 0, (struct sockaddr *)&server_addr, len_serv_addr) < 0)
+            {
+                print_error_and_exit("Sending");
+            }
 
-            printf("I sent");
+            printf("I sent %d", n);
             // receive from server
-            n = recvfrom(client_soc, sending_msg, MAX_LINE, 0, (struct sockaddr *)&server_addr, &len_serv_addr);
+            n = recvfrom(c_udp_soc, sending_msg, MAX_LINE, 0, (struct sockaddr *)&server_addr, &len_serv_addr);
 
             printf("I received %s", sending_msg);
 

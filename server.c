@@ -28,8 +28,7 @@ int main(int argc, char *argv[])
     // Set all bytes of the server address to 0
     memset(&server_address, 0, len_addr);
     server_address.sin_family = AF_INET;
-    server_address.sin_addr.s_addr = inet_addr("127.0.0.1");
-    //server_address.sin_addr.s_addr = htonl(INADDR_ANY);
+    server_address.sin_addr.s_addr = htonl(INADDR_ANY);
     server_address.sin_port = htons(port);
 
     // Bind the server to the initialized socket
@@ -41,15 +40,10 @@ int main(int argc, char *argv[])
     // Since server uses UDP, simply receive a request and respond
     len_client_adr = sizeof(struct sockaddr_in);
 
-    //printf("port: %s", server_address.sin_port);
-    //printf("port: %s ; ipaddress: %s", server_address.sin_port, server_address.sin_addr.s_addr);
-
     // So server can accept multiple user requests
     while (1)
     {
     write(1,"Came here",9);
-    //printf("ss%sss", server_address.sin_port);
-    //write(1, server_address.sin_port, 3);
         n = recvfrom(serv_socket, request_buf, MAX_LINE, 0, (struct sockaddr *)&client_address, &len_client_adr);
         if (n < 0)
         {
