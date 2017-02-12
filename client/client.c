@@ -174,12 +174,17 @@ int main(int argc, char *argv[])
                         fprintf(dat, buffer);
                         fclose(dat);
 
-                        /* close the connection */
+                        /* close the tcp connected connection */
                         if ( close(tcp_conn_s) < 0 ) {
                             print_error_and_exit("closing tcp socket");
                         }
                         break;
                     }
+
+                /* close tcp listening connection */
+                if (close(tcp_lis_s) < 0) {
+                    print_error_and_exit("while closing connection");
+                }
 
                     printf("Requested data has been saved in ");
                     printf("%s successfully.\n", file_name);
