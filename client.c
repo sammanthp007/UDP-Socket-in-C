@@ -29,7 +29,7 @@ int main(int argc, char *argv[])
 
     }
     else {
-        print_error_and_exit("Invalid number of arguments.");
+        printf("Invalid number of arguments. ");
         print_error_and_exit("<client> <TCPport> <serverIP> <serverUDP port>");
     }
 
@@ -81,7 +81,7 @@ int main(int argc, char *argv[])
 
             // send using UDP
             // buffer_len + 5 for including the last char
-            n = sendto(client_soc, sending_msg, buffer_len + 4, 0, (struct sockaddr *)&server_addr, &len_serv_addr);
+            n = sendto(client_soc, sending_msg, buffer_len + 4, 0, (struct sockaddr *)&server_addr, len_serv_addr);
 
             printf("I sent");
             // receive from server
