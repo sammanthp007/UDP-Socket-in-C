@@ -167,7 +167,6 @@ int main(int argc, char *argv[])
                         /* Retrive input from connected socket */
                         data_len = recv(tcp_conn_s, buffer, MAX_LINE, 0);
                         buffer[data_len] = '\0';
-                        write(1, buffer, data_len);
 
                         //save the data to a file
                         FILE* dat = fopen(file_name, "wb");
