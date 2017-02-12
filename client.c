@@ -90,6 +90,10 @@ int main(int argc, char *argv[])
             printf("I received %s", sending_msg);
 
         }
+        else if (strlen(input_buffer) == 2 && strncmp(input_buffer, "q", 1) == 0)
+        {
+            return EXIT_SUCCESS;
+        }
     }
 }
 
