@@ -156,7 +156,6 @@ int main(int argc, char *argv[])
                         print_error_and_exit("while listening");
                     }
 
-
                     /* for connection until accpting */
                     while (1) {
                         printf("waiting to be accepted");
@@ -165,18 +164,22 @@ int main(int argc, char *argv[])
                             print_error_and_exit("connection tcp");
                         }
 
-                        printf("New connection made with server using TCP");
                         int data_len;
                         char buffer[MAX_LINE];
 
-                            /* Retrive input from connected socket */
-                            data_len = recv(tcp_conn_s, buffer, MAX_LINE, 0);
-                            buffer[data_len] = '\0';
-                            printf("Content of file");
-                            write(1, buffer, data_len);
+                        /* Retrive input from connected socket */
+                        data_len = recv(tcp_conn_s, buffer, MAX_LINE, 0);
+                        buffer[data_len] = '\0';
+                        printf("Content of file");
+                        write(1, buffer, data_len);
 
-                            /* info */
-                            printf("Closing socket");
+                        //save the data to a file
+                        FILE* dat = fopen(file_name, "wb");
+                        fprintf(dat, buffer);
+                        fclose(dat);
+
+                        /* info */
+                        printf("Closing socket");
 
                         /* close the connection */
                         if ( close(tcp_conn_s) < 0 ) {
@@ -185,23 +188,6 @@ int main(int argc, char *argv[])
                         break;
                     }
 
-
-                    exit(0);
-
-
-
-                    // Find the just data section of the message
-                    int ii = strcspn(message, "\n");
-                    char just_data[n];
-                    memcpy(just_data, &message[ii + 1], n - ii);
-
-                    //save the just the data to a file
-                    FILE* dat = fopen(file_name, "wb");
-
-                    fprintf(dat, just_data);
-                    fclose(dat);
-
-                    printf("Server has responded. The content of server response");
                     printf(" has been saved in %s successfully.\n", file_name);
                 }
 
