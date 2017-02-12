@@ -186,7 +186,7 @@ int main(int argc, char *argv[])
                 }
 
                 else if (strncmp(message, "NOT FOUND\n", 10) == 0) {
-                    printf("NOT FOUND\n");
+                    printf("%s not found\n", file_name);
                 }
             }
         }
