@@ -3,8 +3,11 @@
 int main(int argc, char *argv[])
 {
     int c_udp_soc, len_serv_addr, len_c_udp_soc, n;
+    int tcp_lis_s, tcp_conn_s;
     short int server_UDP_port, client_tcp_port;
     struct sockaddr_in server_addr, client_addr;
+    struct sockaddr_in tcp_soc_addr;
+    struct sockaddr_in tcp_client_addr;
     char *endptr;               /* for strtol() */
     char *sAddr;                /* for server IP addr */
     char *sudpPort;             /* for server udp port */
@@ -130,8 +133,44 @@ int main(int argc, char *argv[])
                 /* remove noise added during transmission */
                 message[n] = '\0';
                 if (strncmp(message, "OK", 2) == 0){
-                    printf("OK");
+                    printf("%s",message);
+
+                    /* create a listening to tcp port for any requests */
+                    if ((tcp_lis_s = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+                        print_error_and_exit("creating listening socket");
+                    }
+
+                    /* config the tcp_addr */
+                    memset(&tcp_soc_addr, 0, sizeof(tcp_soc_addr));
+                    tcp_soc_addr.sin_family = AF_INET;
+                    tcp_soc_addr.sin_port = htons(client_tcp_port);
+                    tcp_soc_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+
+                    /* bind socket to address */
+                    if (bind(tcp_lis_s, (struct sockaddr *) &tcp_soc_addr, len_serv_addr) < 0) {
+                        print_error_and_exit("binding tcp");
+                    }
+
+                    /* listen to socket */
+                    if (listen(tcp_lis_s, LISTENQ) < 0) {
+                        print_error_and_exit("while listening");
+                    }
+
+                    /* for connection until accpting */
+                    while (1) {
+                        if ((tcp_conn_s = accept(tcp_lis_s, (struct sockaddr *)&tcp_client_addr, &len_serv_addr)) < 0)
+                        {
+                            print_error_and_exit("connection tcp");
+                        }
+
+                        printf("New connection made with server using TCP");
+                        int data_len = 1;
+                    }
+                                           
+
                     exit(0);
+
+
                     
                     // Find the just data section of the message
                     int ii = strcspn(message, "\n");

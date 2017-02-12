@@ -11,6 +11,7 @@
 
 #include <unistd.h>     // Misc UNIX function
 
+#define LISTENQ        (1024)   /*  Backlog for listen()   */
 #define MAX_LINE (1024) // max inside any buffer
 
 void print_error_and_exit(char *msg)
