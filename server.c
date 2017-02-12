@@ -2,12 +2,12 @@
 
 int main(int argc, char *argv[])
 {
-    int serv_socket;    // define the socket
+    int serv_socket, client_socket;    // define the socket
     short int port;         // port number
     struct sockaddr_in server_address;   // server address structure
     struct sockaddr_in client_address;   // client address
     char request_buf[MAX_LINE];     // char buffer to get request
-    int len_addr;
+    int len_addr, len_client_adr;    // length of srv and client addr
 
     if (argc < 2)
     {
@@ -36,6 +36,27 @@ int main(int argc, char *argv[])
     {
         print_error_and_exit("Can't bind");
     }
+
+    // Since server uses UDP, simply receive a request and respond
+    len_client_adr = sizeof(struct sockaddr_in);
+
+    // So server can accept multiple user requests
+    while (1)
+    {
+        if (client_socket = recvfrom(serv_socket, request_buf, MAX_LINE, 0, (struct sockaddr *)&client_address, &len_client_adr) < 0)
+        {
+            print_error_and_exit("While receiving");
+        }
+
+        // upon receiving
+        printf("I received");
+    }
+}
+
+
+
+
+
 
 
 
