@@ -121,10 +121,10 @@ int main(int argc, char *argv[])
                 print_error_and_exit("sending");
             }
 
-            /* receive message from server */
+            /* receive message from server using UDP */
             if ((n = recvfrom(c_udp_soc, message, MAX_LINE, 0, (struct sockaddr *)&server_addr, &len_serv_addr)) > 0)
             {
-                // because noise gets added during transmission
+                /* remove noise added during transmission */
                 message[n] = '\0';
                 write(1, message, n);
 
