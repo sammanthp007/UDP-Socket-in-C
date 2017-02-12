@@ -5,16 +5,18 @@ int main(int argc, char *argv[])
     int c_udp_soc, len_serv_addr, len_c_udp_soc, n;
     short int server_UDP_port, client_tcp_port;
     struct sockaddr_in server_addr, client_addr;
-    char *endptr;              // for strtol()
-    char *sAddr;               // for server IP addr
-    char *sudpPort;               // for server udp port
-    char *ctcpPort;             // for client tcp port
-    char input_buffer[MAX_LINE];
+    char *endptr;               /* for strtol() */
+    char *sAddr;                /* for server IP addr */
+    char *sudpPort;             /* for server udp port */
+    char *ctcpPort;             /* for client tcp port */
+    char input_buffer[MAX_LINE];/* for taking in user requests */
+    char *tcp_port;              /* for storing tcp port as string */
 
 
     if (argc == 4)
     {
-        // get client tcp port
+        /* get and validate the provided tcp ip */
+        tcp_port = argv[1];
         client_tcp_port = strtol(argv[1], &endptr, 0);
         if (*endptr) {
             print_error_and_exit("Invalid client TCPport supplied");
@@ -57,7 +59,7 @@ int main(int argc, char *argv[])
         printf("Enter s for message, t for file transfer, q to exit:\n");
         fgets(input_buffer, MAX_LINE, stdin);
 
-        // when user inputs 2
+        // when user inputs s
         if (strlen(input_buffer) == 2 && strncmp(input_buffer, "s", 1) == 0)
         {
             // prompt user for message
@@ -95,6 +97,7 @@ int main(int argc, char *argv[])
                 write(1, sending_msg, n);
             }
         }
+        /* when user inputs t */
         else if (strlen(input_buffer) == 2 && strncmp(input_buffer, "t", 1) == 0){
             printf("Enter file name: \n");
             // fgets also takes in the last \n
@@ -104,16 +107,15 @@ int main(int argc, char *argv[])
             char file_name[MAX_LINE];
             strcpy(file_name, input_buffer);
             int buffer_len = strlen(input_buffer);
-            file_name[buffer_len - 1] = '\0';
 
-            /* Send message to server in the form "FILE\nxxx\n" */
-            char message[MAX_LINE + 10];
-
+            /* create message in the form "FILE\nxxx\nkkk\n" */
+            char message[MAX_LINE + 20];
             strcpy(message, "FILE\n");
-            strcat(message, input_buffer);
+            strcat(message, file_name);
+            strcat(message, tcp_port);
+            strcat(message, "\n");
 
-            message[buffer_len + 5] = '\0';
-
+            /* Send message to server through UDP in the form "FILE\nxxx\n" */
             if (n = sendto(c_udp_soc, message, strlen(message), 0, (struct sockaddr *)&server_addr, len_serv_addr) < 0)
             {
                 print_error_and_exit("sending");
