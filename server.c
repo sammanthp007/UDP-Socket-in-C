@@ -43,13 +43,19 @@ int main(int argc, char *argv[])
     // So server can accept multiple user requests
     while (1)
     {
-        if (client_socket = recvfrom(serv_socket, request_buf, MAX_LINE, 0, (struct sockaddr *)&client_address, &len_client_adr) < 0)
+        if ((client_socket = recvfrom(serv_socket, request_buf, MAX_LINE, 0, (struct sockaddr *)&client_address, &len_client_adr)) < 0)
         {
             print_error_and_exit("While receiving");
         }
 
         // upon receiving
         printf("I received");
+
+        // send the response
+        if ((client_socket = sendto(serv_socket, "Got it", 6, 0, (struct sockaddr *)&client_address, len_client_adr)) < 0)
+        {
+            print_error_and_exit("while sending");
+        }
     }
 }
 
