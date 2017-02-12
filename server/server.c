@@ -99,8 +99,28 @@ int main(int argc, char *argv[])
                     print_error_and_exit("while sending");
                 }
             }
+            /* there is a file with server */
             else
             {
+                /* get the size of the file */
+                fseek(fpointer, 0L, SEEK_END);
+                int file_sz = ftell(fpointer);
+                
+                /* put fpointer to first */
+                rewind(fpointer);
+
+                printf("<><><>%d><><><",file_sz);
+                /* Create the OK code, max is OK\n64000\n\0 */
+                char ok_code[10];
+                sprintf(ok_code, "OK\n%d\n\0", file_sz);
+
+                /* send the OK code to client */
+                if ((n = sendto(serv_socket, ok_code, strlen(ok_code), 0, (struct sockaddr *)&client_address, len_addr)) < 0)
+                {
+                    print_error_and_exit("while sending ok");
+                }
+                exit(0);
+
                 // get the file_name of the file
                 char *filecontent = ReadFile(file_name);
                 if (filecontent)
@@ -122,9 +142,6 @@ int main(int argc, char *argv[])
                 }
             }
         }
-
-
-
     }
 
     return 0;
