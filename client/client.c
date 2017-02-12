@@ -131,6 +131,15 @@ int main(int argc, char *argv[])
                 message[n] = '\0';
                 write(1, message, n);
 
+                if (strncmp(input_buffer, "OK", 2) == 0){
+                        printf("OK");
+                }
+
+                else if (strncmp(input_buffer, "NOT FOUND\n", 10) == 0) {
+                    printf("NOT FOUND\n");
+                    exit(0);
+                }
+
 
                 // Find the just data section of the message
                 int ii = strcspn(message, "\n");
