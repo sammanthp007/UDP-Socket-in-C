@@ -12,7 +12,6 @@ int main(int argc, char *argv[])
     char input_buffer[MAX_LINE];
 
     // input must be in the format:
-    // <client> <TCP port> <server IP> <server UDP port>
 
     if (argc == 4)
     {
@@ -40,9 +39,17 @@ int main(int argc, char *argv[])
         print_error_and_exit("Cannot create Socket");
     }
 
-    // 
+    // <client> <TCP port> <server IP> <server UDP port>
+    // configure the server address struct to send to
+    memset(&server_addr, 0, sizeof(server_addr));
+    server_addr.sin_family = AF_INET;
+    server_addr.sin_port = htons(client_tcp_port);
 
-    // TODO check the three arguments to make sure they are to make sure they are what they need to be
+    if (inet_aton(argv[2], &server_addr.sin_addr) <= 0) {
+        print_error_and_exit("Setting UDP IP server");
+    }
+
+
 
     // The client runs until client tells it to stop
     while (1)
