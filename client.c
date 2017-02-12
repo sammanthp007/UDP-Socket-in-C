@@ -32,7 +32,7 @@ int main(int argc, char *argv[])
     }
 
     /* create UDP socket */
-    if ((c_udp_soc = socket(AF_INET, SOCK_DGRAM, 0) < 0))
+    if ((c_udp_soc = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
     {
         print_error_and_exit("Creating Socket");
     }
