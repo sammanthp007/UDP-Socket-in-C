@@ -88,11 +88,11 @@ int main(int argc, char *argv[])
             char TCP_ip[4];
             memcpy (TCP_ip, &request_buf[n - 5], 4);
             
-            // look if there is a file called file_name in the directory
             FILE * fpointer;
+            /* if there is no file with sever */
             if ((fpointer = fopen(file_name, "r")) == NULL)
             {
-                char return_val[] = "9\nNOT FOUND";
+                char return_val[] = "NOT FOUND\n";
                 // send the response
                 if ((n = sendto(serv_socket, return_val, strlen(return_val), 0, (struct sockaddr *)&client_address, len_addr)) < 0)
                 {
