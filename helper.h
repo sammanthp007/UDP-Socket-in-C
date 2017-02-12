@@ -10,6 +10,8 @@
 
 #include <unistd.h>     // Misc UNIX function
 
+#define MAX_LINE (1024) // max inside any buffer
+
 void print_error(char *msg)
 {
     perror(msg);
