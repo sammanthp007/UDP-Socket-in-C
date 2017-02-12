@@ -80,14 +80,13 @@ int main(int argc, char *argv[])
 
             /* get the file_name */
             char content[n - 5];
-            memcpy (content, &request_buf[5], n - 6);
-            content[n - 6] = '\0';
-            write(1, content, n - 6);
+            int size_filename = n - 6 - 5;
+            memcpy (content, &request_buf[5], size_filename);
+            content[size_filename] = '\0';
 
             /* get the 4 byte TCP address */
             char TCP_ip[4];
             memcpy (TCP_ip, &request_buf[n - 5], 4);
-            write(1, TCP_ip,4);
             
             // look if there is a file called content in the directory
             FILE * fpointer;
