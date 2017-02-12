@@ -2,12 +2,13 @@
 
 int main(int argc, char *argv[])
 {
-    int serv_socket, client_socket;    // define the socket
+    int serv_socket;    // define the socket
     short int port;         // port number
     struct sockaddr_in server_address;   // server address structure
     struct sockaddr_in client_address;   // client address
     char request_buf[MAX_LINE];     // char buffer to get request
     int len_addr, len_client_adr;    // length of srv and client addr
+    int n;                          // to receive the number of transmissions
 
     if (argc < 2)
     {
@@ -43,7 +44,7 @@ int main(int argc, char *argv[])
     // So server can accept multiple user requests
     while (1)
     {
-        if ((client_socket = recvfrom(serv_socket, request_buf, MAX_LINE, 0, (struct sockaddr *)&client_address, &len_client_adr)) < 0)
+        if ((n = recvfrom(serv_socket, request_buf, MAX_LINE, 0, (struct sockaddr *)&client_address, &len_client_adr)) < 0)
         {
             print_error_and_exit("While receiving");
         }
@@ -52,7 +53,7 @@ int main(int argc, char *argv[])
         printf("I received");
 
         // send the response
-        if ((client_socket = sendto(serv_socket, "Got it", 6, 0, (struct sockaddr *)&client_address, len_client_adr)) < 0)
+        if ((n = sendto(serv_socket, "Got it", 6, 0, (struct sockaddr *)&client_address, len_client_adr)) < 0)
         {
             print_error_and_exit("while sending");
         }

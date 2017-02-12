@@ -2,7 +2,7 @@
 
 int main(int argc, char *argv[])
 {
-    int client_soc, len_client_soc, n;
+    int client_soc, len_serv_addr, len_client_soc, n;
     short int server_UDP_port, client_tcp_port;
     struct sockaddr_in server_addr, client_addr;
     char *endptr;              // for strtol()
@@ -49,7 +49,7 @@ int main(int argc, char *argv[])
         print_error_and_exit("Setting UDP IP server");
     }
 
-
+    len_serv_addr = sizeof(server_addr);
 
     // The client runs until client tells it to stop
     while (1)
@@ -80,6 +80,14 @@ int main(int argc, char *argv[])
             sending_msg[buffer_len + 4] = '\0';
 
             // send using UDP
+            // buffer_len + 5 for including the last char
+            n = sendto(client_soc, sending_msg, buffer_len + 4, 0, (struct sockaddr *)&server_addr, &len_serv_addr);
+
+            printf("I sent");
+            // receive from server
+            n = recvfrom(client_soc, sending_msg, MAX_LINE, 0, (struct sockaddr *)&server_addr, &len_serv_addr);
+
+            printf("I received %s", sending_msg);
 
         }
     }
