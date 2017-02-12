@@ -75,22 +75,22 @@ int main(int argc, char *argv[])
             }
         }
 
-        /* Send the content of a file */
+        /* Send the file_name of a file */
         if (strncmp(request_buf, "FILE", 4) == 0){
 
             /* get the file_name */
-            char content[n - 5];
+            char file_name[n - 5];
             int size_filename = n - 6 - 5;
-            memcpy (content, &request_buf[5], size_filename);
-            content[size_filename] = '\0';
+            memcpy (file_name, &request_buf[5], size_filename);
+            file_name[size_filename] = '\0';
 
             /* get the 4 byte TCP address */
             char TCP_ip[4];
             memcpy (TCP_ip, &request_buf[n - 5], 4);
             
-            // look if there is a file called content in the directory
+            // look if there is a file called file_name in the directory
             FILE * fpointer;
-            if ((fpointer = fopen(content, "r")) == NULL)
+            if ((fpointer = fopen(file_name, "r")) == NULL)
             {
                 char return_val[] = "9\nNOT FOUND";
                 // send the response
@@ -101,8 +101,8 @@ int main(int argc, char *argv[])
             }
             else
             {
-                // get the content of the file
-                char *filecontent = ReadFile(content);
+                // get the file_name of the file
+                char *filecontent = ReadFile(file_name);
                 if (filecontent)
                 {
                     // create and modify msg
