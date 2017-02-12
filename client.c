@@ -3,20 +3,44 @@
 int main(int argc, char *argv[])
 {
     int client_soc, len_client_soc, n;
+    short int server_UDP_port, client_tcp_port;
     struct sockaddr_in server_addr, client_addr;
-    struct hostent *hp;
+    char *endptr;              // for strtol()
+    char *sAddr;               // for server IP addr
+    char *sudpPort;               // for server udp port
+    char *ctcpPort;             // for client tcp port
     char input_buffer[MAX_LINE];
 
-    if (argc != 3)
+    // input must be in the format:
+    // <client> <TCP port> <server IP> <server UDP port>
+
+    if (argc == 4)
     {
-        print_error_and_exit("Need more argument");
+        // get client tcp port
+        client_tcp_port = strtol(argv[1], &endptr, 0);
+        if (*endptr) {
+            print_error_and_exit("Invalid client TCPport supplied");
+        }
+        
+        // get server UDP port
+        server_UDP_port = strtol(argv[3], &endptr, 0);
+        if (*endptr) {
+            print_error_and_exit("Invalid server UDP port");
+        }
+
+    }
+    else {
+        print_error_and_exit("Invalid number of arguments.");
+        print_error_and_exit("<client> <TCPport> <serverIP> <serverUDP port>");
     }
 
-    // create socket
+    // create UDP socket
     if ((client_soc = socket(AF_INET, SOCK_DGRAM, 0) < 0))
     {
         print_error_and_exit("Cannot create Socket");
     }
+
+    // 
 
     // TODO check the three arguments to make sure they are to make sure they are what they need to be
 
@@ -49,6 +73,7 @@ int main(int argc, char *argv[])
             sending_msg[buffer_len + 4] = '\0';
 
             // send using UDP
+
         }
     }
 }
