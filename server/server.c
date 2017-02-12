@@ -148,19 +148,23 @@ int main(int argc, char *argv[])
                     /* set the remote servers port */
                     client_address.sin_port = htons(tcp_port);
 
-
-
-                    
-
-
-
-
-
-                    if ((n = sendto(serv_socket, msg, strlen(msg), 0, (struct sockaddr *)&client_address, len_addr)) < 0)
+                    /* connect to remote server */
+                    if (connect(tcp_soc, (struct sockaddr *)&client_address, sizeof(client_address)) < 0)
                     {
-                        print_error_and_exit("while sending");
+                        print_error_and_exit("connecting to server");
                     }
+                    printf("Connected");
+
+
+                   /* send a message */
+                    char rndm_msg[] = "hello";
+                    send(tcp_soc, msg, strlen(rndm_msg), 0);
+
+                    /* free the file pointer */
                     free(filecontent);
+
+                    /* close tcp connection */
+                    return EXIT_SUCCESS;
                 }
             }
         }
