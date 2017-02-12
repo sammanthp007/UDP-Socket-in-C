@@ -7,7 +7,7 @@ int main(int argc, char *argv[])
     struct sockaddr_in server_address;   // server address structure
     struct sockaddr_in client_address;   // client address
     char request_buf[MAX_LINE];     // char buffer to get request
-    int length_of_addr;
+    int len_addr;
 
     if (argc < 2)
     {
@@ -23,13 +23,22 @@ int main(int argc, char *argv[])
         print_error_and_exit("Can't open socket");
     }
 
-    length_of_addr = sizeof(server_address);
+    len_addr = sizeof(server_address);
 
     // Set all bytes of the server address to 0
-    memset(&server_address, 0, length_of_addr);
+    memset(&server_address, 0, len_addr);
     server_address.sin_family = AF_INET;
     server_address.sin_addr.s_addr = htonl(INADDR_ANY);
     server_address.sin_port = htons(port);
+
+    // Bind the server to the initialized socket
+    if (bind(serv_socket, (struct sockaddr *) &server_address, len_addr) < 0)
+    {
+        print_error_and_exit("Can't bind");
+    }
+
+
+
 
 
 

@@ -15,5 +15,6 @@
 void print_error_and_exit(char *msg)
 {
     perror(msg);
+    fprintf("\n");
     exit(0);
 }
