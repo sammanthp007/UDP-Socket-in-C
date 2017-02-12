@@ -131,6 +131,7 @@ int main(int argc, char *argv[])
                     strcpy(msg, filecontent);
                 }
                 else {
+                    printf("empty file here");
                     strcpy(msg, "");
                 }
 
