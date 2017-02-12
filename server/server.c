@@ -2,48 +2,46 @@
 
 int main(int argc, char *argv[])
 {
-    int serv_socket;    // define the socket
-    short int port;         // port number
-    struct sockaddr_in server_address;   // server address structure
-    struct sockaddr_in client_address;   // client address
-    char request_buf[MAX_LINE];     // char buffer to get request
-    int len_addr, len_client_adr;    // length of srv and client addr
-    int n;                          // to receive the number of transmissions
+    int serv_socket;                    /* define the socket */
+    short int port;                     /* port number */
+    struct sockaddr_in server_address;  /* server address structure */
+    struct sockaddr_in client_address;  /* client address */
+    char request_buf[MAX_LINE];         /* char buffer to get request */
+    int len_addr;       /* length of srv and client addr */
+    int n;                              /* send and receive transmissions */
 
     if (argc < 2)
     {
         print_error_and_exit("No UDP port");
     }
 
-    // Get the port number
+    /* Get the port number */
     port = atoi(argv[1]);
 
-    // Create a server socket
+    /* Create a server socket */
     if ((serv_socket = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
         print_error_and_exit("Can't open socket");
     }
 
+    /* give size of the sockaddr_in, since repeated uses */
     len_addr = sizeof(server_address);
 
-    // Set all bytes of the server address to 0
+    /* Set all bytes of the server address to 0 */
     memset(&server_address, 0, len_addr);
     server_address.sin_family = AF_INET;
     server_address.sin_addr.s_addr = htonl(INADDR_ANY);
     server_address.sin_port = htons(port);
 
-    // Bind the server to the initialized socket
+    /* Bind the server to the initialized socket */
     if (bind(serv_socket, (struct sockaddr *) &server_address, len_addr) < 0)
     {
-        print_error_and_exit("Can't bind");
+        print_error_and_exit("Binding");
     }
-
-    // Since server uses UDP, simply receive a request and respond
-    len_client_adr = sizeof(struct sockaddr_in);
 
     // So server can accept multiple user requests
     while (1)
     {
-        n = recvfrom(serv_socket, request_buf, MAX_LINE, 0, (struct sockaddr *)&client_address, &len_client_adr);
+        n = recvfrom(serv_socket, request_buf, MAX_LINE, 0, (struct sockaddr *)&client_address, &len_addr);
         if (n < 0)
         {
             print_error_and_exit("While receiving");
@@ -71,7 +69,7 @@ int main(int argc, char *argv[])
             strcat(msg, "\n");
 
             // send the response
-            if ((n = sendto(serv_socket, msg, strlen(msg), 0, (struct sockaddr *)&client_address, len_client_adr)) < 0)
+            if ((n = sendto(serv_socket, msg, strlen(msg), 0, (struct sockaddr *)&client_address, len_addr)) < 0)
             {
                 print_error_and_exit("while sending");
             }
@@ -90,7 +88,7 @@ int main(int argc, char *argv[])
             {
                 char return_val[] = "9\nNOT FOUND";
                 // send the response
-                if ((n = sendto(serv_socket, return_val, strlen(return_val), 0, (struct sockaddr *)&client_address, len_client_adr)) < 0)
+                if ((n = sendto(serv_socket, return_val, strlen(return_val), 0, (struct sockaddr *)&client_address, len_addr)) < 0)
                 {
                     print_error_and_exit("while sending");
                 }
@@ -110,7 +108,7 @@ int main(int argc, char *argv[])
                     strcat(msg, filecontent);
 
                     // send message to client
-                if ((n = sendto(serv_socket, msg, strlen(msg), 0, (struct sockaddr *)&client_address, len_client_adr)) < 0)
+                if ((n = sendto(serv_socket, msg, strlen(msg), 0, (struct sockaddr *)&client_address, len_addr)) < 0)
                 {
                     print_error_and_exit("while sending");
                 }
