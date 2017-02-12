@@ -132,7 +132,6 @@ int main(int argc, char *argv[])
                 /* remove noise added during transmission */
                 message[n] = '\0';
                 if (strncmp(message, "OK", 2) == 0){
-                    printf("%s",message);
 
                     /* create a listening to tcp port for any requests */
                     if ((tcp_lis_s = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
@@ -150,7 +149,6 @@ int main(int argc, char *argv[])
                         print_error_and_exit("binding tcp");
                     }
 
-                    printf("Now listening to socket");
                     /* listen to socket */
                     if (listen(tcp_lis_s, LISTENQ) < 0) {
                         print_error_and_exit("while listening");
@@ -158,7 +156,6 @@ int main(int argc, char *argv[])
 
                     /* for connection until accpting */
                     while (1) {
-                        printf("waiting to be accepted");
                         if ((tcp_conn_s = accept(tcp_lis_s, (struct sockaddr *)&tcp_client_addr, &len_serv_addr)) < 0)
                         {
                             print_error_and_exit("connection tcp");
@@ -170,16 +167,12 @@ int main(int argc, char *argv[])
                         /* Retrive input from connected socket */
                         data_len = recv(tcp_conn_s, buffer, MAX_LINE, 0);
                         buffer[data_len] = '\0';
-                        printf("Content of file");
                         write(1, buffer, data_len);
 
                         //save the data to a file
                         FILE* dat = fopen(file_name, "wb");
                         fprintf(dat, buffer);
                         fclose(dat);
-
-                        /* info */
-                        printf("Closing socket");
 
                         /* close the connection */
                         if ( close(tcp_conn_s) < 0 ) {
@@ -188,7 +181,8 @@ int main(int argc, char *argv[])
                         break;
                     }
 
-                    printf(" has been saved in %s successfully.\n", file_name);
+                    printf("Requested data has been saved in ");
+                    printf("%s successfully.\n", file_name);
                 }
 
                 else if (strncmp(message, "NOT FOUND\n", 10) == 0) {
