@@ -12,7 +12,7 @@
 
 #define MAX_LINE (1024) // max inside any buffer
 
-void print_error(char *msg)
+void print_error_and_exit(char *msg)
 {
     perror(msg);
     exit(0);

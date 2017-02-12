@@ -20,7 +20,7 @@ int main(int argc, char *argv[])
 
     // Create a server socket
     if ((serv_socket = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
-        print_error("Can't open socket");
+        print_error_and_exit("Can't open socket");
     }
 
     length_of_addr = sizeof(server_address);
@@ -30,6 +30,7 @@ int main(int argc, char *argv[])
     server_address.sin_family = AF_INET;
     server_address.sin_addr.s_addr = htonl(INADDR_ANY);
     server_address.sin_port = htons(port);
+
 
 
 
