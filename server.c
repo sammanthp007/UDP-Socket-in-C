@@ -43,7 +43,6 @@ int main(int argc, char *argv[])
     // So server can accept multiple user requests
     while (1)
     {
-    write(1,"Came here",9);
         n = recvfrom(serv_socket, request_buf, MAX_LINE, 0, (struct sockaddr *)&client_address, &len_client_adr);
         if (n < 0)
         {
@@ -51,8 +50,6 @@ int main(int argc, char *argv[])
         }
 
         // upon receiving
-        write(1, "Got: ", 5);
-        // print what was received
         write(1, request_buf, n);
 
         // send the response

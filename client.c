@@ -47,7 +47,6 @@ int main(int argc, char *argv[])
      if (inet_aton(argv[2], &server_addr.sin_addr) <= 0) {
         print_error_and_exit("Setting UDP IP server");
     }
-    printf("Your port: %d / %d and ip address %s \n", server_UDP_port, htons(server_UDP_port),argv[2]);
 
     len_serv_addr = sizeof(server_addr);
 
@@ -86,12 +85,12 @@ int main(int argc, char *argv[])
                 print_error_and_exit("Sending");
             }
 
-            printf("I sent %d", n);
             // receive from server
-            n = recvfrom(c_udp_soc, sending_msg, MAX_LINE, 0, (struct sockaddr *)&server_addr, &len_serv_addr);
-
-            printf("I received %s", sending_msg);
-
+            if ((n = recvfrom(c_udp_soc, sending_msg, MAX_LINE, 0, (struct sockaddr *)&server_addr, &len_serv_addr)) > 0)
+            {
+                sending_msg[n] = '\0';
+                write(1, sending_msg, n);
+            }
         }
         else if (strlen(input_buffer) == 2 && strncmp(input_buffer, "q", 1) == 0)
         {
