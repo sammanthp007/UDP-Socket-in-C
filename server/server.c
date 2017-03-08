@@ -4,9 +4,10 @@ int main(int argc, char *argv[])
 {
     int serv_socket, tcp_soc;                    /* define sockets */
     short int port;                     /* port number */
-    struct sockaddr_in server_address;  /* server address structure */
+    struct sockaddr_in server_address;  /* server address struct */
     struct sockaddr_in client_address;  /* client address */
-    char request_buf[MAX_LINE];         /* char buffer to get request */
+    char request_buf[MAX_LINE];         /* to get request */
+    char response_buf[MAX_LINE];        /* to send response */
     int len_addr;       /* length of srv and client addr */
     int n;                              /* send and receive transmissions */
 
@@ -120,7 +121,6 @@ int main(int argc, char *argv[])
                 {
                     print_error_and_exit("while sending ok");
                 }
-                /* >>>>>>>>>>>>>>>>>> Error Starts here <<<<<<<<<<< */
                 /* create a TCP socket */
                 if ((tcp_soc = socket(AF_INET,SOCK_STREAM,0))<0) {
                     print_error_and_exit("create tcp socket");
@@ -129,31 +129,43 @@ int main(int argc, char *argv[])
                 /* set the remote servers port */
                 client_address.sin_port = htons(tcp_port);
 
-                /* get the content of the file */
-                char *filecontent = ReadFile(file_name);
-                char msg[strlen(filecontent)];
-                if (filecontent)
-                {
-                    /* create and modify msg */
-                    filecontent[strlen(filecontent) - 1] = '\0';
-                    strcpy(msg, filecontent);
-                }
-                else {
-                    printf("empty file here");
-                    strcpy(msg, "");
-                }
-
-
                 /* connect to remote server */
-                while (connect(tcp_soc, (struct sockaddr *)&client_address, sizeof(client_address)) < 0) {
-                    printf("Connection refused... Trying again\n");
+                if (connect(tcp_soc, (struct sockaddr *)&client_address, sizeof(client_address)) < 0) {
+                    printf("Connection refused.\n");
                 }
+
+                /* >>>>>>>>>>>>>>>>>> Error Starts here <<<<<<<<<<< */
+                /* get the content of the file */
+                printf("%d", file_sz);
+                int total = 0;
+                int num_sent = 1;
+
+                /* read and write until end of file */
+                memset(response_buf, 0, sizeof(response_buf));
+                while(num_sent > 0 & total < file_sz)
+                {
+                    int num_read;
+                    /* read upto MAX_LINE */
+                    if (( num_read = fread(response_buf, 1, MAX_LINE, fpointer)) < 0) {
+                        print_error_and_exit("reading file\n");
+                    }
+
+                    printf("%d read: %s", num_sent, response_buf);  
 
                 /* send a message */
-                send(tcp_soc, msg, strlen(msg), 0);
-
-                /* free the file pointer */
+                    /* write to client */
+                    if ((num_sent = write(tcp_soc, response_buf, num_read)) < 0)
+                        {
+                            print_error_and_exit("writing to client");
+                        }
+                    
+                    /* reset the buffer */
+                    memset(response_buf, 0, sizeof(response_buf));
+                    total += num_sent;
+                /* free the file pointer
                 free(filecontent);
+                */
+                }
 
                 /* <<<<<<<<<<<<<<<<<<< error ends here <<<<<<<<<< */
 
