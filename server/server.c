@@ -120,6 +120,14 @@ int main(int argc, char *argv[])
                 {
                     print_error_and_exit("while sending ok");
                 }
+                /* >>>>>>>>>>>>>>>>>> Error Starts here <<<<<<<<<<< */
+                /* create a TCP socket */
+                if ((tcp_soc = socket(AF_INET,SOCK_STREAM,0))<0) {
+                    print_error_and_exit("create tcp socket");
+                }
+
+                /* set the remote servers port */
+                client_address.sin_port = htons(tcp_port);
 
                 /* get the content of the file */
                 char *filecontent = ReadFile(file_name);
@@ -135,13 +143,6 @@ int main(int argc, char *argv[])
                     strcpy(msg, "");
                 }
 
-                /* create a TCP socket */
-                if ((tcp_soc = socket(AF_INET,SOCK_STREAM,0))<0) {
-                    print_error_and_exit("create tcp socket");
-                }
-
-                /* set the remote servers port */
-                client_address.sin_port = htons(tcp_port);
 
                 /* connect to remote server */
                 while (connect(tcp_soc, (struct sockaddr *)&client_address, sizeof(client_address)) < 0) {
@@ -153,6 +154,8 @@ int main(int argc, char *argv[])
 
                 /* free the file pointer */
                 free(filecontent);
+
+                /* <<<<<<<<<<<<<<<<<<< error ends here <<<<<<<<<< */
 
                 /* close tcp connection */
                 if (close(tcp_soc) < 0) {
