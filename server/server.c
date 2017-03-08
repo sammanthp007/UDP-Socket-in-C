@@ -90,7 +90,7 @@ int main(int argc, char *argv[])
 
             FILE * fpointer;
             /* file not found */
-            if ((fpointer = fopen(file_name, "r")) == NULL)
+            if ((fpointer = fopen(file_name, "rb")) == NULL)
             {
                 char return_val[] = "NOT FOUND\n";
                 /* send response */
@@ -102,6 +102,8 @@ int main(int argc, char *argv[])
             /* file found */
             else
             {
+                printf("%s is found.\n", file_name);
+
                 /* get size of the file */
                 fseek(fpointer, 0L, SEEK_END);
                 int file_sz = ftell(fpointer);
@@ -119,12 +121,12 @@ int main(int argc, char *argv[])
                     print_error_and_exit("while sending ok");
                 }
 
-                // get the content of the file
+                /* get the content of the file */
                 char *filecontent = ReadFile(file_name);
                 char msg[strlen(filecontent)];
                 if (filecontent)
                 {
-                    // create and modify msg
+                    /* create and modify msg */
                     filecontent[strlen(filecontent) - 1] = '\0';
                     strcpy(msg, filecontent);
                 }
