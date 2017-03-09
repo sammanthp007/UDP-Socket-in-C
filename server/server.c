@@ -131,7 +131,7 @@ int main(int argc, char *argv[])
 
                 int read_so_far = 0;
                 int total = file_sz;
-                printf("TOTAL bytes>%d", total);
+                printf("TOTAL bytes>%d\n", total);
                 int read_now = MAX_LINE;
 
 
@@ -143,22 +143,47 @@ int main(int argc, char *argv[])
                 if (connect(tcp_soc, (struct sockaddr *)&client_address, sizeof(client_address)) < 0) {
                     print_error_and_exit("Connection refused");
                 }
-
-                while (total > read_so_far)
+                int num_read = 1;
+                int num_sent = 1;
+                int curr_sent = 1;
+                char buffer [1000];
+                FILE * fptr = fopen(file_name, "rb");
+                while(num_sent > 0 && total > curr_sent)
+                    {
+                        if((num_read = fread(buffer, 1, MAX_LINE, fptr)) < 0)
+                        {
+                            printf("Problem reading from file! Exiting...\n");
+                            exit(0);
+                        }
+                        if((num_sent = write(tcp_soc, buffer, num_read)) < 0)
+                        {
+                            printf("Error writing to client.Exiting...\n");
+                            printf("Errno: %d", errno);
+                            exit(0);
+                        }
+                        printf("Sent: %d bytes\n", num_sent);
+                        memset(buffer, 0, sizeof(buffer));  
+                        curr_sent += num_sent;
+                        printf("Sent so far: %d bytes\n", curr_sent);
+                    }
+                /*while (total > read_so_far)
                 {
-                    printf("READ_SO_FAR: %d\n", read_so_far);
-
-                    /* get the content of the file */
+                    /* get the content of the file 
                     if (read_now + read_so_far >= total) {
                         read_now = total - read_so_far;
                     }
 
-                    char *filecontent = ReadFile(file_name, read_so_far, read_now);
+                    /*char *filecontent = ReadFile(file_name, read_so_far, read_now);
+
+                    int read_size;
+        // read_size = fread(buffer, sizeof(char), length, handler);
+
+
                     int cont_size = strlen(filecontent) + 1;
                     char msg[cont_size];
                     if (filecontent)
                     {
-                        /* create and modify msg */
+                        /* create and modify msg 
                         filecontent[strlen(filecontent)] = '\0';
                         strcpy(msg, filecontent);
                     }
@@ -168,15 +193,23 @@ int main(int argc, char *argv[])
                     }
 
 
-                    /* send a message */
-                    send(tcp_soc, msg, strlen(msg), 0);
+                    printf("READ_SO_FAR: %d\n", read_so_far);
+
+                    /* send a message 
+                    int data_len;
+                    int siz = strlen(msg);
+                    printf("SIZE OF EACH MESSAGE: %d\n", siz);
+                    data_len = write(tcp_soc, filecontent, read_now);
+                    // data_len = write(tcp_soc, msg, strlen(msg));
+
+                    printf("DATA ACTUALLY SENT: %d\n", data_len);*/
 
 
-                    /* free the file pointer */
+                    /* free the file pointer 
                     free(filecontent);
                     read_so_far += read_now;
-                }
-                    printf("%s sent.\n", file_name);
+                }*/
+                printf("%s sent.\n", file_name);
 
                 /* close tcp connection */
                 if (close(tcp_soc) < 0) {

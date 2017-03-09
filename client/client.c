@@ -178,10 +178,13 @@ int main(int argc, char *argv[])
                         FILE* once = fopen(file_name, "wb");
                         fprintf(once, "");
                         fclose(once);
+                        
+                        int read_so_far = 0;
+                        printf("Total file size: %d\n", file_size);
 
                         /* add all the data from file */
-                        while (data_len && file_size) {
-                            printf("File size: %d\n", file_size);
+                        while (data_len > 0 && read_so_far < file_size) {
+                            printf("Read so far: %d\n", read_so_far);
                             printf("data written: %d/n", data_len);
 
                             char buffer[MAX_LINE];
@@ -189,11 +192,13 @@ int main(int argc, char *argv[])
                             /* Retrive input from connected socket */
                             data_len = recv(tcp_conn_s, buffer, MAX_LINE, 0);
                             //buffer[data_len] = '\0';
-                            file_size = file_size - data_len;
+                            read_so_far = read_so_far + data_len;
 
                             //save the data to a file
                             FILE* dat = fopen(file_name, "ab");
-                            fprintf(dat, buffer);
+                            //fprintf(dat, buffer);
+
+                            int num_fwr = fwrite(buffer, 1, data_len, dat);
                             fclose(dat);
                         }
 
