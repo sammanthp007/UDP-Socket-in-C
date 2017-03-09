@@ -175,9 +175,6 @@ int main(int argc, char *argv[])
                             data_len = recv(tcp_conn_s, buffer, MAX_LINE, 0);
                             buffer[data_len] = '\0';
 
-                            printf("\nReceived: %s\n", buffer);
-                            printf("\n\nsexxy boy me\n");
-
                             //save the data to a file
                             FILE* dat = fopen(file_name, "a");
                             fprintf(dat, buffer);
