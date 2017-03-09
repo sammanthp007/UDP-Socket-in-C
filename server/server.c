@@ -121,6 +121,9 @@ int main(int argc, char *argv[])
                     print_error_and_exit("while sending ok");
                 }
                 /* >>>>>>>>>>>>>>>>>> Error Starts here <<<<<<<<<<< */
+
+                printf("the error code is: %s\n", ok_code);
+
                 /* create a TCP socket */
                 if ((tcp_soc = socket(AF_INET,SOCK_STREAM,0))<0) {
                     print_error_and_exit("create tcp socket");
@@ -129,31 +132,59 @@ int main(int argc, char *argv[])
                 /* set the remote servers port */
                 client_address.sin_port = htons(tcp_port);
 
-                /* get the content of the file */
-                char *filecontent = ReadFile(file_name);
-                char msg[strlen(filecontent)];
-                if (filecontent)
-                {
-                    /* create and modify msg */
-                    filecontent[strlen(filecontent) - 1] = '\0';
-                    strcpy(msg, filecontent);
-                }
-                else {
-                    printf("empty file here");
-                    strcpy(msg, "");
-                }
+                int read_so_far = 0;
+                int total = file_sz;
+                int read_now = 1024;
 
+
+                /* repetedly perform this */
 
                 /* connect to remote server */
-                while (connect(tcp_soc, (struct sockaddr *)&client_address, sizeof(client_address)) < 0) {
-                    printf("Connection refused... Trying again\n");
+                if (connect(tcp_soc, (struct sockaddr *)&client_address, sizeof(client_address)) < 0) {
+                    printf("Connection refused...\n");
                 }
 
-                /* send a message */
-                send(tcp_soc, msg, strlen(msg), 0);
+                while (total > read_so_far)
+                {
+                    printf("\n>>>>>>>>>>>>>>>>>entered loop\n");
 
-                /* free the file pointer */
-                free(filecontent);
+                    /* get the content of the file */
+                    if (read_now + read_so_far >= total) {
+                        read_now = total - read_so_far;
+                    }
+
+                    printf(" Total needs reading: %d\n", total);
+                    printf("Read so far: %d\n", read_so_far);
+                    printf("In next reading: %d\n", read_now);
+
+                    char *filecontent = ReadFile(file_name, read_so_far, read_now);
+                    char msg[strlen(filecontent)];
+                    if (filecontent)
+                    {
+                        /* create and modify msg */
+                        filecontent[strlen(filecontent) - 1] = '\0';
+                        strcpy(msg, filecontent);
+                        printf("\nThe message being sent: %s", msg);
+                        /* put fpointer to first */
+                        /* rewind(fpointer); */
+                    }
+                    else {
+                        printf("empty file here");
+                        strcpy(msg, "");
+                    }
+
+
+                    /* send a message */
+                    send(tcp_soc, msg, strlen(msg), 0);
+
+
+                    /* free the file pointer */
+                    free(filecontent);
+                    read_so_far += read_now;
+
+                }
+
+                /* end of loop */
 
                 /* <<<<<<<<<<<<<<<<<<< error ends here <<<<<<<<<< */
 
