@@ -1,4 +1,38 @@
-#include "helper.h"
+#include <stdio.h>
+#include <stdlib.h>
+
+#include <string.h>
+#include <errno.h>
+#include <ctype.h>
+
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <arpa/inet.h>
+
+#include <unistd.h>     // Misc UNIX function
+
+#define LISTENQ        (1024)   /*  Backlog for listen()   */
+#define MAX_LINE (1024) // max inside any buffer
+
+void print_error_and_exit(char *msg)
+{
+    perror(msg);
+    printf("\n");
+    exit(0);
+}
+
+void Cap(char []);
+
+void Cap(char string[]){
+    int i;
+    int x = strlen(string); // get the length of the whole string.
+    for (i=0;i<x;i++){
+        if (isalpha(string[i])){
+            string[i]= toupper(string[i]);
+        }
+    }
+}
+
 
 int main(int argc, char *argv[])
 {
@@ -184,9 +218,6 @@ int main(int argc, char *argv[])
 
                         /* add all the data from file */
                         while (data_len > 0 && read_so_far < file_size) {
-                            printf("Read so far: %d\n", read_so_far);
-                            printf("data written: %d/n", data_len);
-
                             char buffer[MAX_LINE];
 
                             /* Retrive input from connected socket */
