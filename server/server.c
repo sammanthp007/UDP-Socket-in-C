@@ -156,13 +156,12 @@ int main(int argc, char *argv[])
                     printf("In next reading: %d\n", read_now);
 
                     char *filecontent = ReadFile(file_name, read_so_far, read_now);
-                    char msg[strlen(filecontent)];
+                    int cont_size = strlen(filecontent) + 1;
+                    char msg[cont_size];
                     if (filecontent)
                     {
                         /* create and modify msg */
-                        printf("filecontent: %s\n", filecontent);
-                        filecontent[strlen(filecontent) - 1] = '\0';
-                        printf("filecontent: %s\n", filecontent);
+                        filecontent[strlen(filecontent)] = '\0'; 
                         strcpy(msg, filecontent);
                     }
                     else {

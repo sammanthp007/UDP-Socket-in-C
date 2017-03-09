@@ -35,6 +35,8 @@ void Cap(char string[]){
 
 
 char* ReadFile(char *filename, int start, int length){
+
+    printf(">>>>>>>>>>><<<<<<<<<<<<<<<<<\n");
     char *buffer = NULL;
     int string_size, read_size;
     FILE *handler = fopen(filename, "r");
@@ -42,20 +44,15 @@ char* ReadFile(char *filename, int start, int length){
     if (handler)
     {
         printf("\nShould read %d chars from %d\n", length, start);
-        // Seek the last byte of the file
-        // fseek(handler, 0, SEEK_END);
-        // Seek the start
+
+        /* will start seeking from start */
         fseek(handler, start, SEEK_SET);
         string_size = ftell(handler);
         printf("\n Will start reading from here: %d\n", string_size);
-        // Offset from the first to the last byte, or in other words, filesize
-        // string_size = ftell(handler);
-        // go back to the start of the file
-        // rewind(handler);
 
         // Allocate a string that can hold it all
         // buffer = (char*) malloc(sizeof(char) * (string_size + 1) );
-        buffer = (char*) malloc(sizeof(char) * length + 1);
+        buffer = (char*) malloc(sizeof(char) * length);
 
         // Read it all in one operation
         read_size = fread(buffer, sizeof(char), length, handler);
@@ -66,7 +63,6 @@ char* ReadFile(char *filename, int start, int length){
         // and buffer is now officially a string
         // buffer[string_size] = '\0';
         buffer[length] = '\0';
-        printf("\n\n\n%s\n", buffer);
 
         // if (string_size != read_size)
         if (length != read_size)
