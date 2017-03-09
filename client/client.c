@@ -160,6 +160,8 @@ int main(int argc, char *argv[])
                 print_error_and_exit("sending");
             }
 
+            /* <<<<<<<<<<<<<<<<<<<< Start here >>>>>>>>>>>>>>>>>>> */
+
             /* receive message from server using UDP */
             if ((n = recvfrom(c_udp_soc, message, MAX_LINE, 0, (struct sockaddr *)&server_addr, &len_serv_addr)) > 0)
             {
