@@ -153,7 +153,7 @@ int main(int argc, char *argv[])
                         read_now = total - read_so_far;
                     }
 
-                    printf(" Total needs reading: %d\n", total);
+                    printf("Total needs reading: %d\n", total);
                     printf("Read so far: %d\n", read_so_far);
                     printf("In next reading: %d\n", read_now);
 
@@ -164,7 +164,7 @@ int main(int argc, char *argv[])
                         /* create and modify msg */
                         filecontent[strlen(filecontent) - 1] = '\0';
                         strcpy(msg, filecontent);
-                        printf("\nThe message being sent: %s", msg);
+                        // printf("\nThe message being sent: %s", msg);
                         /* put fpointer to first */
                         /* rewind(fpointer); */
                     }
@@ -181,7 +181,6 @@ int main(int argc, char *argv[])
                     /* free the file pointer */
                     free(filecontent);
                     read_so_far += read_now;
-
                 }
 
                 /* end of loop */

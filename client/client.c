@@ -156,22 +156,30 @@ int main(int argc, char *argv[])
 
                     /* for connection until accpting */
                     while (1) {
+                        printf("Accepting TCP connection for file transfer.\n");
                         if ((tcp_conn_s = accept(tcp_lis_s, (struct sockaddr *)&tcp_client_addr, &len_serv_addr)) < 0)
                         {
                             print_error_and_exit("connection tcp");
                         }
 
-                        int data_len;
-                        char buffer[MAX_LINE];
+                        int data_len = 1;
+                        char * all_data;
 
-                        /* Retrive input from connected socket */
-                        data_len = recv(tcp_conn_s, buffer, MAX_LINE, 0);
-                        buffer[data_len] = '\0';
+                        while (data_len) {
 
-                        //save the data to a file
-                        FILE* dat = fopen(file_name, "wb");
-                        fprintf(dat, buffer);
-                        fclose(dat);
+                            char buffer[MAX_LINE];
+
+                            /* Retrive input from connected socket */
+                            data_len = recv(tcp_conn_s, buffer, MAX_LINE, 0);
+                            buffer[data_len] = '\0';
+
+                            printf("\nReceived: %s\n", buffer);
+
+                            //save the data to a file
+                            FILE* dat = fopen(file_name, "wb");
+                            fprintf(dat, buffer);
+                            fclose(dat);
+                        }
 
                         /* close the tcp connected connection */
                         if ( close(tcp_conn_s) < 0 ) {
@@ -180,10 +188,11 @@ int main(int argc, char *argv[])
                         break;
                     }
 
-                /* close tcp listening connection */
-                if (close(tcp_lis_s) < 0) {
-                    print_error_and_exit("while closing connection");
-                }
+                    /* close tcp listening connection */
+                    printf("Closing TCP connection for file transfer.\n");
+                    if (close(tcp_lis_s) < 0) {
+                        print_error_and_exit("while closing connection");
+                    }
 
                     printf("Requested data has been saved in ");
                     printf("%s successfully.\n", file_name);

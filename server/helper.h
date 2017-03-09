@@ -41,8 +41,13 @@ char* ReadFile(char *filename, int start, int length){
 
     if (handler)
     {
+        printf("\nShould read %d chars from %d\n", length, start);
         // Seek the last byte of the file
         // fseek(handler, 0, SEEK_END);
+        // Seek the start
+        fseek(handler, start, SEEK_SET);
+        string_size = ftell(handler);
+        printf("\n Will start reading from here: %d\n", string_size);
         // Offset from the first to the last byte, or in other words, filesize
         // string_size = ftell(handler);
         // go back to the start of the file
@@ -54,6 +59,8 @@ char* ReadFile(char *filename, int start, int length){
 
         // Read it all in one operation
         read_size = fread(buffer, sizeof(char), length, handler);
+        string_size = ftell(handler);
+        printf("\n read %d chars till here: %d\n", read_size, string_size);
 
         // fread doesn't set it so put a \0 in the last position
         // and buffer is now officially a string
@@ -65,8 +72,12 @@ char* ReadFile(char *filename, int start, int length){
         {
             // Something went wrong, throw away the memory and set
             // the buffer to NULL
+            printf("\n\nWHTTTTTTTTTTTTTTFFFFFFFFFFFFFFFFFFf\n\n");
             free(buffer);
             buffer = NULL;
+        }
+        else {
+            printf("\n\n\nGOODJOB\n\n\n");
         }
 
         // Always remember to close the file.
