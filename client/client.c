@@ -179,7 +179,7 @@ int main(int argc, char *argv[])
                             buffer[data_len] = '\0';
 
                             //save the data to a file
-                            FILE* dat = fopen(file_name, "a");
+                            FILE* dat = fopen(file_name, "ab");
                             fprintf(dat, buffer);
                             fclose(dat);
                         }
