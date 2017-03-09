@@ -102,7 +102,7 @@ int main(int argc, char *argv[])
             /* file found */
             else
             {
-                printf("%s is found.\n", file_name);
+                printf("File %s is found.\n", file_name);
 
                 /* get size of the file */
                 fseek(fpointer, 0L, SEEK_END);
@@ -120,9 +120,6 @@ int main(int argc, char *argv[])
                 {
                     print_error_and_exit("while sending ok");
                 }
-                /* >>>>>>>>>>>>>>>>>> Error Starts here <<<<<<<<<<< */
-
-                printf("the error code is: %s\n", ok_code);
 
                 /* create a TCP socket */
                 if ((tcp_soc = socket(AF_INET,SOCK_STREAM,0))<0) {
@@ -141,7 +138,7 @@ int main(int argc, char *argv[])
 
                 /* connect to remote server */
                 if (connect(tcp_soc, (struct sockaddr *)&client_address, sizeof(client_address)) < 0) {
-                    printf("Connection refused...\n");
+                    print_error_and_exit("Connection refused...");
                 }
 
                 while (total > read_so_far)
@@ -151,17 +148,13 @@ int main(int argc, char *argv[])
                         read_now = total - read_so_far;
                     }
 
-                    printf("Total needs reading: %d\n", total);
-                    printf("Read so far: %d\n", read_so_far);
-                    printf("In next reading: %d\n", read_now);
-
                     char *filecontent = ReadFile(file_name, read_so_far, read_now);
                     int cont_size = strlen(filecontent) + 1;
                     char msg[cont_size];
                     if (filecontent)
                     {
                         /* create and modify msg */
-                        filecontent[strlen(filecontent)] = '\0'; 
+                        filecontent[strlen(filecontent)] = '\0';
                         strcpy(msg, filecontent);
                     }
                     else {
@@ -178,10 +171,7 @@ int main(int argc, char *argv[])
                     free(filecontent);
                     read_so_far += read_now;
                 }
-
-                /* end of loop */
-
-                /* <<<<<<<<<<<<<<<<<<< error ends here <<<<<<<<<< */
+                    printf("%s sent.\n", file_name);
 
                 /* close tcp connection */
                 if (close(tcp_soc) < 0) {

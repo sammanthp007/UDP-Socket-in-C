@@ -35,20 +35,15 @@ void Cap(char string[]){
 
 
 char* ReadFile(char *filename, int start, int length){
-
-    printf(">>>>>>>>>>><<<<<<<<<<<<<<<<<\n");
     char *buffer = NULL;
     int string_size, read_size;
     FILE *handler = fopen(filename, "r");
 
     if (handler)
     {
-        printf("\nShould read %d chars from %d\n", length, start);
-
         /* will start seeking from start */
         fseek(handler, start, SEEK_SET);
         string_size = ftell(handler);
-        printf("\n Will start reading from here: %d\n", string_size);
 
         // Allocate a string that can hold it all
         // buffer = (char*) malloc(sizeof(char) * (string_size + 1) );
@@ -57,7 +52,6 @@ char* ReadFile(char *filename, int start, int length){
         // Read it all in one operation
         read_size = fread(buffer, sizeof(char), length, handler);
         string_size = ftell(handler);
-        printf("\n read %d chars till here: %d\n", read_size, string_size);
 
         // fread doesn't set it so put a \0 in the last position
         // and buffer is now officially a string
@@ -69,12 +63,8 @@ char* ReadFile(char *filename, int start, int length){
         {
             // Something went wrong, throw away the memory and set
             // the buffer to NULL
-            printf("\n\nWHTTTTTTTTTTTTTTFFFFFFFFFFFFFFFFFFf\n\n");
             free(buffer);
             buffer = NULL;
-        }
-        else {
-            printf("\n\n\nGOODJOB\n\n\n");
         }
 
         // Always remember to close the file.
