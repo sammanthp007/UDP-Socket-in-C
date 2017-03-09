@@ -138,11 +138,15 @@ int main(int argc, char *argv[])
                         print_error_and_exit("creating listening socket");
                     }
 
+                    /* get the position of the second \n */
+                    char * pch;
+                    pch = strchr(&message[3], '\n');
+                    int pos = pch - &message[3] + 1;
+
                     /* get the size of the file to receive */
                     char file_size_str[10];
-                    memcpy(file_size_str, &message[3], n - 4);
+                    memcpy(file_size_str, &message[3], pos);
                     int file_size = atoi(file_size_str);
-                    printf("%d bytes to receive\n", file_size);
 
                     /* config the tcp_addr */
                     memset(&tcp_soc_addr, 0, sizeof(tcp_soc_addr));
@@ -176,14 +180,15 @@ int main(int argc, char *argv[])
                         fclose(once);
 
                         /* add all the data from file */
-                        while (file_size) {
+                        while (data_len && file_size) {
+                            printf("File size: %d\n", file_size);
+                            printf("data written: %d/n", data_len);
 
                             char buffer[MAX_LINE];
 
                             /* Retrive input from connected socket */
-                            data_len = read(tcp_conn_s, buffer, MAX_LINE);
-                            buffer[data_len] = '\0';
-                            printf("READ: %d\n", data_len);
+                            data_len = recv(tcp_conn_s, buffer, MAX_LINE, 0);
+                            //buffer[data_len] = '\0';
                             file_size = file_size - data_len;
 
                             //save the data to a file
@@ -201,7 +206,7 @@ int main(int argc, char *argv[])
 
                     /* close tcp listening connection */
                     printf("Received complete file.\n");
-                    if (shutdown(tcp_lis_s, SHUT_RDWR) < 0) {
+                    if (close(tcp_lis_s) < 0) {
                         print_error_and_exit("while closing connection");
                     }
 
