@@ -1,4 +1,26 @@
-#include "helper.h"
+#include <stdio.h>
+#include <stdlib.h>
+
+#include <string.h>
+#include <errno.h>
+#include <ctype.h>
+
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <arpa/inet.h>
+
+#include <unistd.h>     // Misc UNIX function
+
+#define MAX_LINE (1024) // max inside any buffer
+
+void print_error_and_exit(char *msg)
+{
+    perror(msg);
+    printf("\n");
+    exit(0);
+}
+
+void Cap(char []);
 
 int main(int argc, char *argv[])
 {
@@ -131,7 +153,6 @@ int main(int argc, char *argv[])
 
                 int read_so_far = 0;
                 int total = file_sz;
-                printf("TOTAL bytes>%d\n", total);
                 int read_now = MAX_LINE;
 
 
@@ -161,54 +182,10 @@ int main(int argc, char *argv[])
                             printf("Errno: %d", errno);
                             exit(0);
                         }
-                        printf("Sent: %d bytes\n", num_sent);
                         memset(buffer, 0, sizeof(buffer));  
                         curr_sent += num_sent;
-                        printf("Sent so far: %d bytes\n", curr_sent);
-                    }
-                /*while (total > read_so_far)
-                {
-                    /* get the content of the file 
-                    if (read_now + read_so_far >= total) {
-                        read_now = total - read_so_far;
                     }
 
-                    /*char *filecontent = ReadFile(file_name, read_so_far, read_now);
-
-                    int read_size;
-        // read_size = fread(buffer, sizeof(char), length, handler);
-
-
-                    int cont_size = strlen(filecontent) + 1;
-                    char msg[cont_size];
-                    if (filecontent)
-                    {
-                        /* create and modify msg 
-                        filecontent[strlen(filecontent)] = '\0';
-                        strcpy(msg, filecontent);
-                    }
-                    else {
-                        printf("empty file here");
-                        strcpy(msg, "");
-                    }
-
-
-                    printf("READ_SO_FAR: %d\n", read_so_far);
-
-                    /* send a message 
-                    int data_len;
-                    int siz = strlen(msg);
-                    printf("SIZE OF EACH MESSAGE: %d\n", siz);
-                    data_len = write(tcp_soc, filecontent, read_now);
-                    // data_len = write(tcp_soc, msg, strlen(msg));
-
-                    printf("DATA ACTUALLY SENT: %d\n", data_len);*/
-
-
-                    /* free the file pointer 
-                    free(filecontent);
-                    read_so_far += read_now;
-                }*/
                 printf("%s sent.\n", file_name);
 
                 /* close tcp connection */
@@ -220,4 +197,15 @@ int main(int argc, char *argv[])
     }
 
     return 0;
+}
+
+
+void Cap(char string[]){
+    int i;
+    int x = strlen(string); // get the length of the whole string.
+    for (i=0;i<x;i++){
+        if (isalpha(string[i])){
+            string[i]= toupper(string[i]);
+        }
+    }
 }
