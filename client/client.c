@@ -165,7 +165,7 @@ int main(int argc, char *argv[])
 
                         /* make a empty file */
                         int data_len = 1;
-                        FILE* once = fopen(file_name, "w");
+                        FILE* once = fopen(file_name, "wb");
                         fprintf(once, "");
                         fclose(once);
 

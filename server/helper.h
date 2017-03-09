@@ -37,7 +37,7 @@ void Cap(char string[]){
 char* ReadFile(char *filename, int start, int length){
     char *buffer = NULL;
     int string_size, read_size;
-    FILE *handler = fopen(filename, "r");
+    FILE *handler = fopen(filename, "rb");
 
     if (handler)
     {
