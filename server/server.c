@@ -134,7 +134,7 @@ int main(int argc, char *argv[])
 
                 int read_so_far = 0;
                 int total = file_sz;
-                int read_now = 1024;
+                int read_now = MAX_LINE;
 
 
                 /* repetedly perform this */
@@ -146,8 +146,6 @@ int main(int argc, char *argv[])
 
                 while (total > read_so_far)
                 {
-                    printf("\n>>>>>>>>>>>>>>>>>entered loop\n");
-
                     /* get the content of the file */
                     if (read_now + read_so_far >= total) {
                         read_now = total - read_so_far;
@@ -162,11 +160,10 @@ int main(int argc, char *argv[])
                     if (filecontent)
                     {
                         /* create and modify msg */
+                        printf("filecontent: %s\n", filecontent);
                         filecontent[strlen(filecontent) - 1] = '\0';
+                        printf("filecontent: %s\n", filecontent);
                         strcpy(msg, filecontent);
-                        // printf("\nThe message being sent: %s", msg);
-                        /* put fpointer to first */
-                        /* rewind(fpointer); */
                     }
                     else {
                         printf("empty file here");

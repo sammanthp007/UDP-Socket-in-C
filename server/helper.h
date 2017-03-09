@@ -55,7 +55,7 @@ char* ReadFile(char *filename, int start, int length){
 
         // Allocate a string that can hold it all
         // buffer = (char*) malloc(sizeof(char) * (string_size + 1) );
-        buffer = (char*) malloc(sizeof(char) * length);
+        buffer = (char*) malloc(sizeof(char) * length + 1);
 
         // Read it all in one operation
         read_size = fread(buffer, sizeof(char), length, handler);
@@ -66,6 +66,7 @@ char* ReadFile(char *filename, int start, int length){
         // and buffer is now officially a string
         // buffer[string_size] = '\0';
         buffer[length] = '\0';
+        printf("\n\n\n%s\n", buffer);
 
         // if (string_size != read_size)
         if (length != read_size)
