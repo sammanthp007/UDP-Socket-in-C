@@ -105,7 +105,7 @@ int main(int argc, char *argv[])
                 printf("File %s is found.\n", file_name);
 
                 /* get size of the file */
-                fseek(fpointer, 0L, SEEK_END);
+                fseek(fpointer, 0, SEEK_END);
                 int file_sz = ftell(fpointer);
 
                 /* put fpointer to first */
@@ -131,18 +131,23 @@ int main(int argc, char *argv[])
 
                 int read_so_far = 0;
                 int total = file_sz;
+                printf("TOTAL bytes>%d", total);
                 int read_now = MAX_LINE;
 
 
                 /* repetedly perform this */
+                sleep(1);
+
 
                 /* connect to remote server */
                 if (connect(tcp_soc, (struct sockaddr *)&client_address, sizeof(client_address)) < 0) {
-                    print_error_and_exit("Connection refused...");
+                    print_error_and_exit("Connection refused");
                 }
 
                 while (total > read_so_far)
                 {
+                    printf("READ_SO_FAR: %d\n", read_so_far);
+
                     /* get the content of the file */
                     if (read_now + read_so_far >= total) {
                         read_now = total - read_so_far;
