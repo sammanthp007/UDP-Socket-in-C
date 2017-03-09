@@ -163,7 +163,9 @@ int main(int argc, char *argv[])
                         }
 
                         int data_len = 1;
-                        char * all_data;
+                        FILE* once = fopen(file_name, "w");
+                        fprintf(once, "");
+                        fclose(once);
 
                         while (data_len) {
 
@@ -174,9 +176,10 @@ int main(int argc, char *argv[])
                             buffer[data_len] = '\0';
 
                             printf("\nReceived: %s\n", buffer);
+                            printf("\n\nsexxy boy me\n");
 
                             //save the data to a file
-                            FILE* dat = fopen(file_name, "wb");
+                            FILE* dat = fopen(file_name, "a");
                             fprintf(dat, buffer);
                             fclose(dat);
                         }
